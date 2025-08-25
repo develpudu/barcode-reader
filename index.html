@@ -1,85 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barcode reader</title>
-  </head>
-  <body>
-    <!-- WebAssembly polyfill for some browsers -->
-    <script src="https://cdn.jsdelivr.net/npm/@undecaf/zbar-wasm@0.9.15/dist/index.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@undecaf/barcode-detector-polyfill@0.9.20/dist/index.js"></script>
+<html>
+	<head>
+		<title>Html-Qrcode Demo</title>
+		<body>
+			<div id="qr-reader" style="width: 500px"></div>
+			<div id="qr-reader-results"></div>
+		</body>
+		<script src="https://unpkg.com/html5-qrcode"></script>
+		<script>
+			function docReady(fn) {
+				// see if DOM is already available
+				if (
+					document.readyState === "complete" ||
+					document.readyState === "interactive"
+				) {
+					// call on next available tick
+					setTimeout(fn, 1);
+				} else {
+					document.addEventListener("DOMContentLoaded", fn);
+				}
+			}
 
-    <!-- Show the camera feed to help the user capture the barcode -->
-    <video id="videoID" autoplay></video>
+			docReady(function () {
+				var resultContainer =
+					document.getElementById("qr-reader-results");
+				var lastResult,
+					countResults = 0;
+				function onScanSuccess(decodedText, decodedResult) {
+					if (decodedText !== lastResult) {
+						++countResults;
+						lastResult = decodedText;
+						// Handle on success condition with the decoded message.
+						console.log(
+							`Scan result ${decodedText}`,
+							decodedResult,
+						);
+					}
+				}
 
-    <br>
-
-    <button onclick="videoID.style.display='none'">hide</button>
-    <button onclick="videoID.style.display='block'">show</button>
-
-    <p id="barcode">Waiting...</p>
-
-    <script>
-
-      async function goBarcode(callBack) {
-
-        // polyfill for some browsers
-        try {
-          window['BarcodeDetector'].getSupportedFormats()
-        } catch {
-          window['BarcodeDetector'] = barcodeDetectorPolyfill.BarcodeDetectorPolyfill
-        }
-
-        // Define video as the video element. You can pass the element to the barcode detector
-        const video = document.querySelector('video')
-        video.play()
-
-        // Get a stream for the rear camera, else the front (or side?) camera
-        video.srcObject = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-
-        // Create a BarcodeDetector for simple retail operations
-    //  const barcodeDetector = new BarcodeDetector({ formats: "ean_13", "ean_8", "upc_a", "upc_e"] })
-        const barcodeDetector = new BarcodeDetector()
-
-        // Let's scan barcodes forever
-        while(true) {
-          try {
-            // Try to detect barcodes in the current video frame
-            let barcodes = await barcodeDetector.detect(video)
-
-            // Continue loop if no barcode was found
-            if(barcodes.length == 0) {
-              // Scan interval 50 ms like in other barcode scanner demos
-              // The higher the interval the longer the battery lasts
-              await new Promise(r => setTimeout(r, 50))
-              continue
-            }
-
-            // We expect a single barcode
-            // It's possible to compare X/Y coordinates to get the center-most one
-            // One can also do "preferred symbology" logic here
-            callBack(barcodes[0].rawValue)
-
-            // Notify user that a barcode has been found
-            navigator.vibrate(200)
-
-            // Give the user time to find another product to scan
-            await new Promise(r => setTimeout(r, 1000))
-          }
-          catch {
-            // Wait till video is ready
-            // barcodeDetector.detect(video) might fail the first time
-            await new Promise(r => setTimeout(r, 200))
-          }
-        }
-      }
-      
-      function readBC(sValue) {
-        document.getElementById("barcode").innerText = sValue
-      }
-
-      goBarcode(readBC)
-    </script>
-  </body>
+				var html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", {
+					fps: 10,
+					qrbox: 250,
+				});
+				html5QrcodeScanner.render(onScanSuccess);
+			});
+		</script>
+	</head>
 </html>
