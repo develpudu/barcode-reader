@@ -1,0 +1,24 @@
+{
+  "name": "barcode-reader-app",
+  "version": "1.0.0",
+  "description": "A web-based barcode reader application using WebAssembly and camera access",
+  "main": "app/index.php",
+  "scripts": {
+    "build": "echo 'No build step required for static deployment'",
+    "start": "echo 'Static deployment - no start script needed'"
+  },
+  "keywords": [
+    "barcode",
+    "scanner",
+    "webassembly",
+    "camera",
+    "web"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

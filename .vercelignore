@@ -1,0 +1,46 @@
+# Docker files
+Dockerfile
+docker-compose.yml
+run.sh
+
+# Web server configurations
+Caddyfile
+
+# Certificates and security
+certs/
+create-cert.sh
+
+# Documentation
+README.md
+VERCEL_DEPLOY.md
+
+# Git
+.git/
+.gitignore
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# PHP files (since we're using HTML version)
+app/
